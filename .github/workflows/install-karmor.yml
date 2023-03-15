@@ -1,0 +1,26 @@
+name: install-armor
+
+on:
+  push:
+    branches: [ci-install]
+
+jobs:
+  install-armor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.3.0
+      - name: Test connectivity
+        run: kubectl get no
+      - name: install karmor
+        run: |
+          make install
+          sudo -u root mv karmor /usr/local/bin/
+      - name: karmor install
+        run : karmor install
+      - name: check
+        run : |
+          sleep 30
+          kubectl get pods -A
