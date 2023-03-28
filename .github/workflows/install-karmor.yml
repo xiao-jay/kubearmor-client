@@ -2,7 +2,7 @@ name: install-armor
 
 on:
   push:
-    branches: [ci-install]
+    branches: ["*"]
 
 jobs:
   install-armor:
@@ -23,4 +23,28 @@ jobs:
       - name: check
         run : |
           sleep 30
+          
           kubectl get pods -A
+      - name: install discover-engin
+        run: kubectl apply -f https://raw.githubusercontent.com/accuknox/discovery-engine/dev/deployments/k8s/deployment.yaml
+      - name: install nginx
+        run : |
+          kubectl create ns nginx
+          kubectl create deployment nginx --image=nginx:1.17.6 -n nginx
+
+      - name: use kubearmor summary
+        run : |
+          sleep 10
+          karmor summary -n nginx > baseline
+          cat baseline
+
+      - name: install newest nginx
+        run: |
+          kubectl delete deployment  nginx -n nginx
+          kubectl create deployment nginx --image=nginx -n nginx
+
+      - name: use kubearmor summary
+        run : |
+          sleep 10
+          karmor summary -n nginx > new
+          diff -r baseline new

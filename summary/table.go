@@ -44,7 +44,7 @@ func DisplaySummaryOutput(resp *opb.Response, revDNSLookup bool, requestType str
 			// Display process data
 			fmt.Printf("\nProcess Data\n")
 			for _, procData := range resp.ProcessData {
-				procStrSlice := []string{}
+				var procStrSlice []string
 				procStrSlice = append(procStrSlice, procData.Source)
 				procStrSlice = append(procStrSlice, procData.Destination)
 				procStrSlice = append(procStrSlice, procData.Count)
